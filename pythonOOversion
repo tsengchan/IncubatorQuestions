@@ -1,0 +1,249 @@
+@@ -0,0 +1,248 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sympy import Point, Line
+import numpy as np
+from scipy.spatial import distance
+
+class antWalk:
+    def __int__(self):
+        self.a = a  #makes no sense here
+        self.b = b  #makes no sense here
+
+        self.path = path
+
+
+    def antWalking(self,a,b):
+
+        i,j=0,0
+
+        path=[(0,0)]
+        distLine = [0]
+        deviation = []
+
+
+
+        while i<a and j<b:
+            x=np.random.uniform(0,1)
+            if x>0.5:
+                path.append((i+1,j))
+                i=i+1
+                #finding the closest distance from a point to a line
+                p1, p2 = Point(0, 0), Point(a, b)
+                s = Line(p1, p2)
+                lll = float(s.distance(Point(i, j)))
+                distLine.append(lll)
+
+                #from the definition find the deviation
+                deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+            if x<=0.5:
+                path.append((i,j+1))
+                j=j+1
+
+                #finding the closest distance from a point to a line
+                p1, p2 = Point(0, 0), Point(a, b)
+                s = Line(p1, p2)
+                lll = float(s.distance(Point(i, j)))
+                distLine.append(lll)
+
+                #from the definition find the deviation
+                deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+        #for case where either a or b is exceeded
+        #check to see if a or b is reached
+        if i==a:
+            while j<b:
+                x=np.random.uniform(0,1)
+                if x>0.5:
+                    path.append((i,j)) #x has reached max value so stay constant
+
+                    #closest distance from point to line
+                    p1, p2 = Point(0, 0), Point(a, b)
+                    s = Line(p1, p2)
+                    lll = float(s.distance(Point(i, j)))
+                    distLine.append(lll)
+
+                    #from the definition find the deviation
+                    deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+                if x<=0.5:
+                    path.append((i,j+1))
+                    j=j+1
+
+                    #closest distance from point to line
+                    p1, p2 = Point(0, 0), Point(a, b)
+                    s = Line(p1, p2)
+                    lll = float(s.distance(Point(i, j)))
+                    distLine.append(lll)
+
+                    #from the definition find the deviation
+                    deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+        if j==b:
+            while i<a:
+                x=np.random.uniform(0,1)
+                if x>0.5:
+                    path.append((i+1,j))
+                    i=i+1
+
+                    #closest distance from point to line
+                    p1, p2 = Point(0, 0), Point(a, b)
+                    s = Line(p1, p2)
+                    lll = float(s.distance(Point(i, j)))
+                    distLine.append(lll)
+
+                    #from the definition find the deviation
+                    deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+                if x<=0.5:
+                    path.append((i,j)) #y has reached max value so stay constant
+
+                    #closest distance from point to line
+                    p1, p2 = Point(0, 0), Point(a, b)
+                    s = Line(p1, p2)
+                    lll = float(s.distance(Point(i, j)))
+                    distLine.append(lll)
+
+                    #from the definition find the deviation
+                    deviation.append(max((i/a - j/b), (j/b - i/a)))
+
+        #self.antPlot(path,a,b)
+
+        self.path = path
+
+        return deviation
+
+
+    def antPlot(self,path,a,b):
+
+        self.a = a
+        self.b = b
+        xx=[]
+        yy=[]
+
+
+        for q,r in path:
+            xx.append(q)
+            yy.append(r)
+
+        linex = [0]
+        linex.append(a)
+        liney = [0]
+        liney.append(b)
+
+        plt.plot(xx, yy, 'o', label='antWalk', markersize=5)
+        plt.plot(linex,liney, 'r', label='Fitted line')
+        plt.xlim([0, a+2])
+        plt.ylim([0, b+2])
+        plt.legend()
+        plt.show()
+
+        print("last path:",path)
+
+        #print(x)
+        #print(y)
+
+
+
+
+
+###################################################################################main
+###Object Orientation needed or else will produce the same set of values for deviation
+
+
+numTrials = 10
+trials =[] #list of trials which are also lists
+
+condList =[] #conditional probability list
+
+threshold = 0.2
+thresh2 = 0.6
+m = 11
+n = 7
+
+for wth in range(numTrials):
+    p = antWalk()
+    mn = p.antWalking(m,n)
+    trials.append(mn)
+
+p.antPlot(p.path,m,n)
+
+#print(p.path[1:])
+#print("next")
+#print(p.path)
+
+
+
+
+##########################################
+count=0  #count threshold1
+count2=0  #count threshold2
+
+
+print("trials:+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+for index, alist in enumerate(trials):
+    for index2,sample in enumerate(alist):
+        print("trial:",index,"sample#:",index2,":",sample)
+        if sample >= threshold:
+            condList.append(sample)
+            print("++++++++++++++++++++++++++++++++++++++++++yes hit 1stThreshold")
+            count=count+1
+
+print("conditional list:++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+for iindex, aavalue in enumerate(condList):
+    print(aavalue)
+
+    if aavalue>=thresh2:
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++yesYes hit 2ndThreshold")
+        count2=count2+1
+
+
+#fracHit = (count/numTrials)  #divide by numTrials
+                            #but can also divide by # elements in total since variable list per trial
+import itertools
+#trials
+flatEle = list(itertools.chain.from_iterable(trials))  #flatten list to count all elements
+fracHit = count/(len(flatEle)*numTrials)  #inSample/totalSample per trial
+
+print("threshold",threshold,"conditionalthreshold",thresh2,"inSample",count,"numTrials",numTrials,"total elements",len(flatEle),"m=",m,",","n=",n)
+print("============================================================================================== statistics")
+print(fracHit*len(flatEle), ":inSample/totTrial")
+print(fracHit*numTrials, ":inSample/totSample")
+print(fracHit, ":inSample/totSample per trials")
+print("============================================= ")
+print("mean:", np.mean(flatEle))
+print("std:",np.std(flatEle))
+print("for m=",m,"n=",n,"conditional probability P("+str(threshold)+"|"+str(thresh2)+"):",count2/len(condList))
+
+
+
+    ########################################################################plots
+
+
+
+###########################################################
+#print('The shortest distance to the line from each point:')
+#for x in distLine:
+#    print(x)### WATCH ORDER COMES AFTER antwalk
+
+#print('deviation max(x/m-y/n,y/n-x/m):')
+#for x in deviation: print(x)
+
+#plt.hist(deviation)
+
+#Notes
+#notice sometimes ant doesn't reach set destinvation (m,n)
+#this is due to the fact if either x,y reaches m,n first then ant stops;
+#there isn't a solution in this case
+#so rewrote so ALWAYS reach (m,n)
+
+#Notes
+# max(x/m - y/n, y/n - x/m)
+# just means x, y is the current point
+# while m,n is the max dimension?
+
+#Challenge Start: 2018-04-26.
+#Challenge End: 1 PM ET 2018-04-30. MONDAY
