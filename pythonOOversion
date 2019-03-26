@@ -167,6 +167,7 @@ for wth in range(numTrials):
     mn = p.antWalking(m,n)
     trials.append(mn)
 
+%matplotlib inline
 p.antPlot(p.path,m,n)
 
 #print(p.path[1:])
